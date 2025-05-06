@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理画面</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="fixed-menu">
+        <div class="container">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 管理者認証 -->
+        <div id="loginForm">
+            <h2>ログイン</h2>
+            <input type="password" id="adminPassword" placeholder="パスワードを入力">
+            <button onclick="checkAdmin()">ログイン</button>
+        </div>
+
+        <!-- 投稿フォーム（非表示） -->
+        <div id="postForm" style="display: none;">
+            <h2>記事投稿</h2>
+            <input type="text" id="title" placeholder="タイトル">
+            <input type="text" id="thumbnail" placeholder="サムネイルURL">
+            <textarea id="content" placeholder="本文"></textarea>
+            <button onclick="postArticle()">投稿</button>
+        </div>
+    </div>
+
+    <script>
+        // 管理者認証処理（例：固定パスワード）
+        function checkAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'your_secure_password') { // ここを実際のパスワードに変更
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('postForm').style.display = 'block';
+            } else {
+                alert('パスワードが違います');
+            }
+        }
+
+        // GitHub APIで記事投稿
+        async function postArticle() {
+            const title = document.getElementById('title').value;
+            const thumbnail = document.getElementById('thumbnail').value;
+            const content = document.getElementById('content').value;
+
+            // GitHub APIのエンドポイント（例）
+            const url = `https://api.github.com/repos/riku-tatuto/my-test-blog/contents/articles/${title}.md`;
+            const token = 'your_github_token'; // GitHubのパーソナルアクセストークン（セキュリティ注意）
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Create ${title}.md`,
+                    content: btoa(`# ${title}\n![サムネイル](${thumbnail})\n\n${content}`),
+                    branch: 'main'
+                })
+            });
+
+            if (response.ok) {
+                alert('投稿成功');
+                location.reload();
+            } else {
+                alert('投稿失敗');
+            }
+        }
+    </script>
+</body>
+</html>
