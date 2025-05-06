@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my-test-blog</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+</head>
+<body>
+    <!-- 固定メニューバー -->
+    <nav class="fixed-menu">
+        <div class="container">
+            <a href="/">Home</a>
+            <a href="/admin">Admin</a>
+        </div>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Home</a> > <span>記事一覧</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 記事一覧 -->
+        <div class="article-list" id="articleList"></div>
+
+        <!-- 新着記事コーナー -->
+        <div class="sidebar">
+            <div class="card">
+                <h3>新着記事</h3>
+                <div id="latestArticles"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase初期化
+        const firebaseConfig = {
+            apiKey: "AIzaSyD7ouobvvAMBOg76rIdbFZiHEHzZH0q4FA",
+            authDomain: "schoolapp-db.firebaseapp.com",
+            databaseURL: "https://schoolapp-db-default-rtdb.firebaseio.com",
+            projectId: "schoolapp-db",
+            storageBucket: "schoolapp-db.firebasestorage.app",
+            messagingSenderId: "28108935218",
+            appId: "1:28108935218:web:f60e76dbc3c0cca9586c2b",
+            measurementId: "G-VNMR6KRCGX"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 記事一覧を取得
+        async function fetchArticles() {
+            // GitHub APIで記事ファイルを取得（例：Markdownファイル）
+            // 実際はGitHub APIを叩く必要があるため、ここはダミー
+            const articles = [
+                { id: '1', title: 'テスト記事1', thumbnail: 'https://via.placeholder.com/300', content: '本文1...' },
+                { id: '2', title: 'テスト記事2', thumbnail: 'https://via.placeholder.com/300', content: '本文2...' }
+            ];
+            const articleList = document.getElementById('articleList');
+            articleList.innerHTML = articles.map(article => `
+                <div class="card article-item">
+                    <img src="${article.thumbnail}" alt="${article.title}">
+                    <h2>${article.title}</h2>
+                </div>
+            `).join('');
+        }
+
+        // 新着記事を取得
+        function fetchLatestArticles() {
+            const latestArticles = document.getElementById('latestArticles');
+            latestArticles.innerHTML = articles.slice(0, 3).map(article => `
+                <div class="latest-item">
+                    <img src="${article.thumbnail}" alt="${article.title}">
+                    <h4>${article.title}</h4>
+                </div>
+            `).join('');
+        }
+
+        // 初期読み込み
+        fetchArticles();
+        fetchLatestArticles();
+    </script>
+</body>
+</html>
